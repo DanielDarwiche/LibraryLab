@@ -1,11 +1,10 @@
 ﻿
 using FluentValidation;
-using LibraryLab.Models;
 using LibraryLab.Models.DTO;
 
 namespace LibraryLab.Validations
 {
-    public class BookValidation : AbstractValidator<Book>   //Validating book 
+    public class BookValidation : AbstractValidator<BookDTO>   //Validating book 
     {
         public BookValidation()
         {
