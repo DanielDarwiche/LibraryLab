@@ -28,7 +28,10 @@ builder.Services.AddScoped<IGenericRepository<BookDTO>, BookRepository>();
 //  registering repository pattern files as a service
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 // reg. Validation using BookValidation
-
+builder.Services.AddScoped<ApiFunctionsRepo>();
+//Registering ApiFunctions  for extra features
+builder.Services.AddScoped<IApiFunctionsRepository<BookDTO>, ApiFunctionsRepo>();
+//  registering repository pattern files as a service
 
 
 var app = builder.Build();
@@ -128,6 +131,56 @@ app.MapDelete("/api/Book/{id:int}", async (IGenericRepository<BookDTO> bookrepo,
     _programLoggaren.Log(LogLevel.Information, "Deleting a book failed");
     return Results.NotFound($"Book not found");
 }).WithName("DeletingBook").Produces(200).Produces(400);
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// --------------------  Endpoints for additional ApiFunctions below  ---------------------------------
+// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+app.MapGet("/api/book/available", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
+{
+    _programLoggaren.Log(LogLevel.Information, "Getting all Available books");
+    var allBooks = await apifunctions.GetAllAvailable();
+    return Results.Ok(allBooks);
+}).WithName("GetAvailableBooks").Produces<IEnumerable<BookDTO>>(200).Produces(400);
 
-//💡 **Extra Utmaning: **    //söka  böcker   //efter författare    //eller genre
+app.MapGet("/api/book/unavailable", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
+{
+    _programLoggaren.Log(LogLevel.Information, "Getting all Unavailable books");
+    var allBooks = await apifunctions.GetAllUnavailable();
+    return Results.Ok(allBooks);
+}).WithName("GetUnavailableBooks").Produces<IEnumerable<BookDTO>>(200).Produces(400);
+
+app.MapGet("/api/book/year", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
+{
+    _programLoggaren.Log(LogLevel.Information, "Getting all books ordered after year");
+    var allBooks = await apifunctions.GetAllOrderedByYear();
+    return Results.Ok(allBooks);
+}).WithName("GetAllOrderedByYear").Produces<IEnumerable<BookDTO>>(200).Produces(400);
+
+app.MapGet("/api/book/author/{author}", async (IApiFunctionsRepository<BookDTO> apifunctions, string author, ILogger<Program> _programLoggaren) =>
+{
+    var booksToFind = await apifunctions.GetByAuthor(author);
+    if (booksToFind != null)
+    {
+        _programLoggaren.Log(LogLevel.Information, "Searching author: success");
+        return Results.Ok(booksToFind);
+    }
+    _programLoggaren.Log(LogLevel.Information, "Searching author: failed");
+    return Results.NotFound($"A book with author '{author}' could not be found");
+}).WithName("GetByAuthor").Produces<IEnumerable<BookDTO>>(200).Produces(400);
+
+app.MapGet("/api/book/title/{title}", async (IApiFunctionsRepository<BookDTO> apifunctions, string title, ILogger<Program> _programLoggaren) =>
+{
+    var booksToFind = await apifunctions.GetByTitle(title);
+    if (booksToFind != null)
+    {
+        _programLoggaren.Log(LogLevel.Information, "Searching title: success");
+        return Results.Ok(booksToFind);
+    }
+    _programLoggaren.Log(LogLevel.Information, "Searching title: failed");
+    return Results.NotFound($"A book with author '{title}' could not be found");
+}).WithName("GetByTitle").Produces<IEnumerable<BookDTO>>(200).Produces(400);
+
+
+
 app.Run();

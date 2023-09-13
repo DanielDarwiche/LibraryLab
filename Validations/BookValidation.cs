@@ -10,7 +10,7 @@ namespace LibraryLab.Validations
         {
             RuleFor(book => book.Title).NotEmpty();
             RuleFor(book => book.Author).NotEmpty();
-            RuleFor(book => book.YearOfPublication).NotEmpty().InclusiveBetween(0, 2023);
+            RuleFor(book => book.YearOfPublication).NotEmpty().InclusiveBetween(-3000, 2023);
         }
     }
 }
