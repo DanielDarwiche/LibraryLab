@@ -46,7 +46,7 @@ app.UseHttpsRedirection();
 // Endpoint refencing Repositories and their logic. ILogger logs whats happening
 app.MapGet("/api/book", async (IGenericRepository<BookDTO> bookrepo, ILogger<Program> _programLoggaren) =>
 {
-    _programLoggaren.Log(LogLevel.Information, "Getting all books");
+    _programLoggaren.Log(LogLevel.Information, "\nGetting all books");
     var allBooks = await bookrepo.GetAll(); //using GetAll to display BookDTO:s
     return Results.Ok(allBooks);
 }).WithName("GetBooks").Produces<IEnumerable<BookDTO>>(200).Produces(400);
@@ -56,10 +56,10 @@ app.MapGet("/api/book/{id:int}", async (IGenericRepository<BookDTO> bookrepo, in
     var bookToFind = await bookrepo.GetById(id);
     if (bookToFind != null) //if the Id exists in database its not null and the book is returned
     {
-        _programLoggaren.Log(LogLevel.Information, "SUCCEDING IN:   Fetching a book via book-ID ");
+        _programLoggaren.Log(LogLevel.Information, "\nSUCCEDING IN:   Fetching a book via book-ID ");
         return Results.Ok(bookToFind);
     }
-    _programLoggaren.Log(LogLevel.Information, "FAILING IN:   Fetching a book via book-ID");
+    _programLoggaren.Log(LogLevel.Error, "\nFAILING IN:   Fetching a book via book-ID");
     return Results.NotFound($"A book with id '{id}' could not be found");
 }).WithName("GetSingleBook").Produces<BookDTO>(200).Produces(400);
 
@@ -70,6 +70,7 @@ app.MapPost("/api/book", async (IGenericRepository<BookDTO> bookrepo, BookDTO bo
     var validationResult = await validator.ValidateAsync(bookdto);
     if (!validationResult.IsValid) //if book is INVALID it results in Error and BadRequest
     {
+        _programLoggaren.Log(LogLevel.Error, "\nValidation incorrect!");
         var errors = validationResult.Errors.Select(error => error.ErrorMessage).ToList();
         return Results.BadRequest(errors);
     }
@@ -78,10 +79,10 @@ app.MapPost("/api/book", async (IGenericRepository<BookDTO> bookrepo, BookDTO bo
     var addingBook = await bookrepo.Create(bookdto);
     if (addingBook == null)     //Logger information informs you of whats happening
     {
-        _programLoggaren.Log(LogLevel.Information, "Creating a book failed ; MapPost");
+        _programLoggaren.Log(LogLevel.Error, "\nCreating a book failed ; MapPost");
         return Results.BadRequest("Book with the title and author already exists");
     }
-    _programLoggaren.Log(LogLevel.Information, "Created a book via MapPost");
+    _programLoggaren.Log(LogLevel.Information, "\nCreated a book via MapPost");
     return Results.Ok(addingBook);
 }).WithName("CreateBook").Accepts<BookDTO>("application/json").Produces<Book>(201).Produces(400);
 
@@ -92,6 +93,7 @@ app.MapPut("/api/book/{id:int}", async (IGenericRepository<BookDTO> bookrepo, Bo
     var validationResult = await validator.ValidateAsync(book);
     if (!validationResult.IsValid) //if book is INVALID it results in Error and BadRequest
     {
+        _programLoggaren.Log(LogLevel.Error, "\nCreating a book failed ; MapPost");
         var errors = validationResult.Errors.Select(error => error.ErrorMessage).ToList();
         return Results.BadRequest(errors);
     }
@@ -100,7 +102,7 @@ app.MapPut("/api/book/{id:int}", async (IGenericRepository<BookDTO> bookrepo, Bo
     var updatebook = await bookrepo.Update(id, book);
     if (updatebook != null)     //Logger information informs you of whats happening
     {
-        _programLoggaren.Log(LogLevel.Information, "Updating a book succeesfully");
+        _programLoggaren.Log(LogLevel.Information, "\nUpdating a book succeesfully");
         // Creating and returning RequestResponse with message and following updated book
         var RequestResponse = new
         {
@@ -109,7 +111,7 @@ app.MapPut("/api/book/{id:int}", async (IGenericRepository<BookDTO> bookrepo, Bo
         };
         return Results.Ok(RequestResponse);
     }
-    _programLoggaren.Log(LogLevel.Information, "Updating a book failed");
+    _programLoggaren.Log(LogLevel.Error, "\nUpdating a book failed");
     return Results.NotFound($"Book with id '{id}' not found");
 }).WithName("UpdateBook").Produces(200).Produces(400);
 
@@ -119,7 +121,7 @@ app.MapDelete("/api/Book/{id:int}", async (IGenericRepository<BookDTO> bookrepo,
     var DeleteBook = await bookrepo.Delete(id);
     if (DeleteBook != null)      //Logger information informs you of whats happening
     {
-        _programLoggaren.Log(LogLevel.Information, "Deleting a book succeeded");
+        _programLoggaren.Log(LogLevel.Information, "\nDeleting a book succeeded");
         // Creating and returning RequestResponse with message and following deleted book
         var RequestResponse = new
         {
@@ -128,7 +130,7 @@ app.MapDelete("/api/Book/{id:int}", async (IGenericRepository<BookDTO> bookrepo,
         };
         return Results.Ok(RequestResponse);
     }
-    _programLoggaren.Log(LogLevel.Information, "Deleting a book failed");
+    _programLoggaren.Log(LogLevel.Error, "\nDeleting a book failed");
     return Results.NotFound($"Book not found");
 }).WithName("DeletingBook").Produces(200).Produces(400);
 // ----------------------------------------------------------------------------------------------------
@@ -138,21 +140,21 @@ app.MapDelete("/api/Book/{id:int}", async (IGenericRepository<BookDTO> bookrepo,
 // ----------------------------------------------------------------------------------------------------
 app.MapGet("/api/book/available", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
 {
-    _programLoggaren.Log(LogLevel.Information, "Getting all Available books");
+    _programLoggaren.LogInformation("\nGetting all Available books");
     var allBooks = await apifunctions.GetAllAvailable();
     return Results.Ok(allBooks);
 }).WithName("GetAvailableBooks").Produces<IEnumerable<BookDTO>>(200).Produces(400);
 
 app.MapGet("/api/book/unavailable", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
 {
-    _programLoggaren.Log(LogLevel.Information, "Getting all Unavailable books");
+    _programLoggaren.LogInformation("\nGetting all Unavailable books");
     var allBooks = await apifunctions.GetAllUnavailable();
     return Results.Ok(allBooks);
 }).WithName("GetUnavailableBooks").Produces<IEnumerable<BookDTO>>(200).Produces(400);
 
 app.MapGet("/api/book/year", async (IApiFunctionsRepository<BookDTO> apifunctions, ILogger<Program> _programLoggaren) =>
 {
-    _programLoggaren.Log(LogLevel.Information, "Getting all books ordered after year");
+    _programLoggaren.LogInformation("\nGetting all books ordered after year");
     var allBooks = await apifunctions.GetAllOrderedByYear();
     return Results.Ok(allBooks);
 }).WithName("GetAllOrderedByYear").Produces<IEnumerable<BookDTO>>(200).Produces(400);
@@ -162,10 +164,10 @@ app.MapGet("/api/book/author/{author}", async (IApiFunctionsRepository<BookDTO> 
     var booksToFind = await apifunctions.GetByAuthor(author);
     if (booksToFind != null)
     {
-        _programLoggaren.Log(LogLevel.Information, "Searching author: success");
+        _programLoggaren.LogInformation("\nSearching author: success");
         return Results.Ok(booksToFind);
     }
-    _programLoggaren.Log(LogLevel.Information, "Searching author: failed");
+    _programLoggaren.LogError("\nSearching author: failed");
     return Results.NotFound($"A book with author '{author}' could not be found");
 }).WithName("GetByAuthor").Produces<IEnumerable<BookDTO>>(200).Produces(400);
 
@@ -174,10 +176,10 @@ app.MapGet("/api/book/title/{title}", async (IApiFunctionsRepository<BookDTO> ap
     var booksToFind = await apifunctions.GetByTitle(title);
     if (booksToFind != null)
     {
-        _programLoggaren.Log(LogLevel.Information, "Searching title: success");
+        _programLoggaren.LogInformation("\nSearching title: success");
         return Results.Ok(booksToFind);
     }
-    _programLoggaren.Log(LogLevel.Information, "Searching title: failed");
+    _programLoggaren.LogError("\nSearching title: failed");
     return Results.NotFound($"A book with author '{title}' could not be found");
 }).WithName("GetByTitle").Produces<IEnumerable<BookDTO>>(200).Produces(400);
 
