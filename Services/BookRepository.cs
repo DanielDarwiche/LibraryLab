@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FluentValidation.Internal;
-using LibraryLab.Data;
-using LibraryLab.Models;
-using LibraryLab.Models.DTO;
+using LibraryLab_Api.Data;
+using LibraryLab_Api.Models;
+using LibraryLab_Api.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryLab.Services
+namespace LibraryLab_Api.Services
 {
-    public class BookRepository : IGenericRepository<BookDTO>   //Working with BookDTO, to conseal properties
+    public class BookRepository : IGenericRepository<Book, BookDTO>   //Working with BookDTO, to conseal properties
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
@@ -18,16 +18,15 @@ namespace LibraryLab.Services
             _mapper = mapper;
             _context = database;
         }
-        public async Task<IEnumerable<BookDTO>> GetAll()
+        public async Task<IEnumerable<Book>> GetAll()
         {
-            var booklist = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-            return booklist;  //Db:s Books are mapping BookDTO:s and returning a list of the DTO:s
+            var booklist = await _context.Books.ToListAsync();
+            return booklist;
         }
-        public async Task<BookDTO> GetById(int id)  //Finding databases book after entered id
+        public async Task<Book> GetById(int id)  //Finding databases book after entered id
         {
             var book = await _context.Books.FirstOrDefaultAsync(book => book.Id == id);
-            return _mapper.Map<BookDTO>(book);   //returns a mapped dto of the book
+            return book;
         }
         public async Task<BookDTO> Create(BookDTO bookdtoToAdd)
         {
@@ -44,31 +43,31 @@ namespace LibraryLab.Services
             await _context.SaveChangesAsync();
             return _mapper.Map<BookDTO>(addedBook.Entity);  //returning dto after adding to database
         }
-        public async Task<BookDTO> Update(int id, BookDTO bookdto)
+        public async Task<Book> Update(int id, Book book)
         {
             //looking if  booktoupdate exists in database by this id
             var BookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
             if (BookToUpdate != null)           //If book is found by id all the props are updated
             {
-                BookToUpdate.Title = bookdto.Title;
-                BookToUpdate.Author = bookdto.Author;
-                BookToUpdate.Genre = bookdto.Genre;
-                BookToUpdate.YearOfPublication = bookdto.YearOfPublication;
-                BookToUpdate.Description = bookdto.Description;
-                BookToUpdate.AvailableToBorrow = bookdto.AvailableToBorrow;
+                BookToUpdate.Title = book.Title;
+                BookToUpdate.Author = book.Author;
+                BookToUpdate.Genre = book.Genre;
+                BookToUpdate.YearOfPublication = book.YearOfPublication;
+                BookToUpdate.Description = book.Description;
+                BookToUpdate.AvailableToBorrow = book.AvailableToBorrow;
                 await _context.SaveChangesAsync();
-                return _mapper.Map<BookDTO>(BookToUpdate); //Saving update and returning dto of book!
+                return BookToUpdate; //Saving update and returning updated book
             }
             return null;    //if the book is not found by its id in the list, null is returned
         }
-        public async Task<BookDTO> Delete(int id)
+        public async Task<Book> Delete(int id)
         {
             var BookToDelete = await _context.Books.FirstOrDefaultAsync(book => book.Id == id);
             if (BookToDelete != null) //if book id is found in database
             {
                 _context.Books.Remove(BookToDelete);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<BookDTO>(BookToDelete); //book deleted and dto returned
+                return BookToDelete; //book deleted and returned
             }
             return null; //will be null if book is not found
         }

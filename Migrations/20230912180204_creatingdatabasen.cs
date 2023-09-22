@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace LibraryLab.Migrations
+namespace LibraryLab_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class creatingdatabasen : Migration
+    public partial class creatingDatabasen : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,61 +1,51 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using LibraryLab.Data;
-using LibraryLab.Models;
-using LibraryLab.Models.DTO;
+using LibraryLab_Api.Data;
+using LibraryLab_Api.Models;
+using LibraryLab_Api.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryLab.Services
+namespace LibraryLab_Api.Services
 {
-    public class ApiFunctionsRepo : IApiFunctionsRepository<BookDTO>
+    public class ApiFunctionsRepo : IApiFunctionsRepository<Book>
     {
         private readonly DataContext _context;
-        private readonly IMapper _mapper;
-        public ApiFunctionsRepo(DataContext context, IMapper mapper) //DI for db-connection and mapping
+        public ApiFunctionsRepo(DataContext context) //DI for db-connection 
         {
             _context = context;
-            _mapper = mapper;
         }
-
-        public async Task<IEnumerable<BookDTO>> GetAllAvailable()
+        public async Task<IEnumerable<Book>> GetAllAvailable()
         {
-            var availablebooklist = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .Where(b => b.AvailableToBorrow == true).ToListAsync();
+            var availablebooklist = await _context.Books.Where(b => b.AvailableToBorrow == true).ToListAsync();
             return availablebooklist;
         }
-        public async Task<IEnumerable<BookDTO>> GetAllUnavailable()
+        public async Task<IEnumerable<Book>> GetAllUnavailable()
         {
-            var unavailablebooklist = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .Where(b => b.AvailableToBorrow == false).ToListAsync();
+            var unavailablebooklist = await _context.Books.Where(b => b.AvailableToBorrow == false).ToListAsync();
             return unavailablebooklist;
         }
-        public async Task<IEnumerable<BookDTO>> GetAllOrderedByYear()
+        public async Task<IEnumerable<Book>> GetAllOrderedByYear()
         {
-            var booklist = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .OrderByDescending(b => b.YearOfPublication).Reverse()
+            var booklist = await _context.Books.OrderByDescending(b => b.YearOfPublication).Reverse()
                 .ToListAsync();
             return booklist;
         }
-
-        public async Task<IEnumerable<BookDTO>> GetByTitle([FromRoute] string title)
+        public async Task<IEnumerable<Book>> GetByTitle([FromRoute] string title)
         {
-            var booksWithSameTitle = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .Where(book => book.Title.ToUpper() == title.ToUpper()).ToListAsync();
+            var booksWithSameTitle = await _context.Books.Where(book => book.Title.ToUpper() == title.ToUpper()).ToListAsync();
             if (booksWithSameTitle.Count > 0)
             {
-                return _mapper.Map<IEnumerable<BookDTO>>(booksWithSameTitle);
+                return booksWithSameTitle;
             }
             return null;
         }
-
-        public async Task<IEnumerable<BookDTO>> GetByAuthor([FromRoute] string author)
+        public async Task<IEnumerable<Book>> GetByAuthor([FromRoute] string author)
         {
-            var booksWithSameAuthor = await _context.Books.ProjectTo<BookDTO>(_mapper.ConfigurationProvider)
-                .Where(book => book.Author.ToUpper() == author.ToUpper()).ToListAsync();
+            var booksWithSameAuthor = await _context.Books.Where(book => book.Author.ToUpper() == author.ToUpper()).ToListAsync();
             if (booksWithSameAuthor.Count > 0)
             {
-                return _mapper.Map<IEnumerable<BookDTO>>(booksWithSameAuthor);
+                return booksWithSameAuthor;
             }
             return null;
         }

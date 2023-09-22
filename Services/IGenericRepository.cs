@@ -1,13 +1,13 @@
-﻿using LibraryLab.Models;
+﻿using LibraryLab_Api.Models;
 
-namespace LibraryLab.Services
+namespace LibraryLab_Api.Services
 {
-    public interface IGenericRepository<T> //Generic Repository interface for Book
+    public interface IGenericRepository<TBook, TBookDTO> //Generic Repository interface for Book
     {
-        Task<IEnumerable<T>> GetAll();
-        Task<T> GetById(int id);
-        Task<T> Create(T t);
-        Task<T> Update(int id, T t);
-        Task<T> Delete(int id);
+        Task<IEnumerable<TBook>> GetAll();
+        Task<TBook> GetById(int id);
+        Task<TBookDTO> Create(TBookDTO t);
+        Task<TBook> Update(int id, TBook t);
+        Task<TBook> Delete(int id);
     }
 }

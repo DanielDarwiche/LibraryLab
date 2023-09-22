@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace LibraryLab.Migrations
+namespace LibraryLab_Api.Migrations
 {
     /// <inheritdoc />
     public partial class ChangedValidations : Migration

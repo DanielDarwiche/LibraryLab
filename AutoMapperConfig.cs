@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using LibraryLab.Models;
-using LibraryLab.Models.DTO;
+using LibraryLab_Api.Models;
+using LibraryLab_Api.Models.DTO;
 
-namespace LibraryLab
+namespace LibraryLab_Api
 {
     public class AutoMapperConfig : Profile     //  Profile entered for AutoMapper
     {

@@ -1,7 +1,7 @@
-﻿using LibraryLab.Models;
+﻿using LibraryLab_Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryLab.Data
+namespace LibraryLab_Api.Data
 {
     public class DataContext : DbContext
     {
