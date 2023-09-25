@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Book>
+@{
+    Layout = "~/Views/Shared/_LayoutBook.cshtml";
+    ViewData["Title"] = "Unavailable";
+}
+
+<h2>Displaying books which are Unavailable</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model=>model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Genre)
+            </th>
+            <th>
+                @Html.DisplayName("Published")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(b => b.AvailableToBorrow == false))
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                <td>@Html.DisplayFor(modelItem => item.Author)</td>
+                <td>@Html.DisplayFor(modelItem => item.Genre)</td>
+                <td>@Html.DisplayFor(modelItem => item.YearOfPublication)</td>
+                <td>
+                    <a asp-action="DetailsBook" class="btn btn-success" asp-route-id="@item.Id">
+                        Details<i class="fa fa-edit"></i>
+                    </a>
+                    <a asp-action="UpdateBook" class="btn btn-warning" asp-route-id="@item.Id">
+                        Edit<i class="fa fa-edit"></i>
+                    </a>
+                    <a asp-action="DeleteBook" class="btn btn-danger" asp-route-id="@item.Id">
+                        Delete<i class="fa fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

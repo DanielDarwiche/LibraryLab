@@ -1,0 +1,52 @@
+﻿@model Book
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Delete";
+}
+
+<div >
+    <form asp-action="DeleteBook">
+        <input asp-for="Id" hidden />
+        <div class="container border p-3">
+            <h2>Details of the book to delete: <br />(@Model.Title - by @Model.Author)</h2>
+            <hr />
+            <div class="row">
+
+                <div class="col-2">
+                    <label asp-for="Title" class="control-label pt-2" style="font-size:20px"></label>
+                </div>
+                <div class="col-10 pb-3">
+                    <input asp-for="Title" disabled class="form-control" />
+                </div>
+
+                <div class="col-2">
+                    <label asp-for="Author" class="control-label pt-2" style="font-size:20px"></label>
+                </div>
+                <div class="col-10 pb-3">
+                    <input asp-for="Author" disabled class="form-control" />
+                </div>
+
+                <div class="col-2">
+                    <label asp-for="YearOfPublication" class="control-label pt-2" style="font-size:20px"></label>
+                </div>
+                <div class="col-10 pb-3">
+                    <input asp-for="YearOfPublication" disabled class="form-control" />
+                </div>
+
+                <div class="col-2">
+                    <label asp-for="Genre" class="control-label pt-2" style="font-size:20px"></label>
+                </div>
+                <div class="col-10 pb-3">
+                    <input asp-for="Genre" disabled class="form-control"  />
+                </div>
+
+                <div class="col-5">
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <a asp-action="IndexBook" class="btn btn-outline-secondary">Back</a>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div> 
+ 

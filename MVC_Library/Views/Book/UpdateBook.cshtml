@@ -1,0 +1,55 @@
+﻿@model Book
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Update";
+}
+
+<h2>Updating the book: </b>@Model.Title</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateBook">
+            <input asp-for="Id" hidden />
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Author" class="control-label"></label>
+                <input asp-for="Author" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Genre" class="control-label"></label>
+                <input asp-for="Genre" class="form-control" />
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="YearOfPublication" class="control-label"></label>
+                <input asp-for="YearOfPublication" class="form-control" />
+            </div>
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input"
+                           asp-for="AvailableToBorrow" />@Html.DisplayNameFor(model => model.AvailableToBorrow)
+                </label>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="IndexBook" class="btn btn-outline-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+ 
+
+ 
