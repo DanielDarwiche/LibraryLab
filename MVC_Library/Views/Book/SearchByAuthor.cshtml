@@ -8,11 +8,10 @@
 
 @using (Html.BeginForm("SearchByAuthor", "Book", FormMethod.Get))
 {
-    @Html.TextBox("author")
-    <input type="submit" value="Find Author"  />
+    @Html.TextBox("author", null, new { @class = "custom-input" })
+    <input type="submit" value="Find Author" class="btn btn-outline-secondary" />
 }
- <br />
-
+ 
 <table class="table">
     <thead>
         <tr>
@@ -39,7 +38,7 @@
     <tbody>
         @if (Model.Count() == 0)
         {
-            <tr>
+               <tr>
                 <td colspan="3" style="color:red">
                     No book found with this author.
                 </td>
@@ -72,3 +71,4 @@
         }
     </tbody>
 </table>
+ 

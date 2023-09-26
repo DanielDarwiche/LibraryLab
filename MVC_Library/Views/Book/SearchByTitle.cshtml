@@ -6,11 +6,10 @@
 <h2>Search a title:</h2>
 @using (Html.BeginForm("SearchByTitle", "Book", FormMethod.Get))
 {
-    @Html.TextBox("title")
-    <input type="submit" value="Find Title" />
+    @Html.TextBox("title", null, new { @class = "custom-input" }) 
+    <input type="submit" value="Find Title" class="btn btn-outline-secondary" />
 }
-<br/>
-
+ 
 <table class="table">
     <thead>
         <tr>
